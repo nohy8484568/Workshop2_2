@@ -1,0 +1,7 @@
+C:\Users\HP\Source\Repos\Workshop2\Service\bin\Debug\Service.dll
+C:\Users\HP\Source\Repos\Workshop2\Service\bin\Debug\Service.pdb
+C:\Users\HP\Source\Repos\Workshop2\Service\obj\Debug\Service.csproj.CoreCompileInputs.cache
+C:\Users\HP\Source\Repos\Workshop2\Service\obj\Debug\Service.dll
+C:\Users\HP\Source\Repos\Workshop2\Service\obj\Debug\Service.pdb
+C:\Users\HP\Source\Repos\Workshop2\Service\bin\Debug\Service.dll.config
+C:\Users\HP\Source\Repos\Workshop2\Service\obj\Debug\Service.csprojAssemblyReference.cache

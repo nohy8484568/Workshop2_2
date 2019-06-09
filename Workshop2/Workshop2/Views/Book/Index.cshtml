@@ -1,0 +1,504 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="~/Content/kendo.common-material.min.css">
+    <link rel="stylesheet" href="~/Content/kendo.material.min.css">
+    <link rel="stylesheet" href="~/Content/uikit.min.css">
+    <link rel="stylesheet" href="~/Content/style.css">
+    <link rel="stylesheet" href="~/Content/fontawesome.css">
+    <title>圖書館</title>
+    <style>
+
+        .k-numerictextbox .k-input {
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <h1 class="navbar-title text-center">圖書管理系統</h1>
+        </nav>
+    </header>
+    <main>
+        <div class="uk-container align-center ">
+            <div id="Search_Form_Div">
+                <form id="Search_Form">
+                    <ul class="fieldlist">
+                        <li>
+                            <span>書名</span>
+                            <input id="Book_Search_Name" class="k-textbox" type="text" style="width: 100%" />
+                        </li>
+                        <li>
+                            <span>圖書類別</span>
+                            <input id="Book_Search_Category"  style="width: 100%" />
+                        </li>
+                        <li>
+                            <span>借閱人</span>
+                            <input id="Book_Search_Member" class="k-textbox" type="text" style="width: 100%" />
+                        </li>
+                        <li>
+                            <span>借閱狀態</span>
+                            <input id="Book_Search_Code" class="k-textbox" type="text" style="width: 100%" />
+                        </li>
+                        <li>
+                            <input type="button" class="k-button" onclick="SearchEvent()" value="查詢" />
+                            <input type="reset" class="k-button" value="清除">
+                            <input type="button" id="Btn_Open_Add_Window" class="k-button" value="新增" />
+                        </li>
+                    </ul>
+
+                </form>
+            </div>
+            <div id="Add_Window" style="display: none">
+                <span id="Add_staticNotification"></span>
+                <form id="Add_Book_Form">
+                    <ul class="fieldlist">
+                        <li>
+                            <label class="required">書名</label>
+                            <input id="Add_Book_Name" class="k-textbox" type="text" style="width: 100%" />
+                        </li>
+                        <li>
+                            <label class="required">作者</label>
+                            <input id="Add_Book_Author" class="k-textbox" type="text" style="width: 100%" />
+                        </li>
+                        <li>
+                            <label class="required">出版社</label>
+                            <input id="Add_Book_Publisher" class="k-textbox" type="text" style="width: 100%" />
+                        </li>
+                        <li>
+                            <label class="required">內容簡介</label>
+                            <input id="Add_Book_Content" class="k-textbox" style="width: 100%" />
+                        </li>
+                        <li>
+                            <label class="required">購買日期</label>
+                            <input id="Bought_Datepicker" style="width: 100%" />
+                        </li>
+                        <li>
+                            <span class="required">圖書類別</span>
+                            <input id="Add_Book_Category"  style="width: 100%" />
+                        </li>
+                        <li class="uk-text-right">
+                            <input type="button" class="k-button k-primary btn-add-book" id="Add_Book_Btn" value="新增" />
+                            <input type="reset" class="k-button" hidden id="Add_Reset_Btn" value="清除">
+                        </li>
+                    </ul>
+                </form>
+            </div>
+            <div id="Edit_Window" style="display: none">
+                <span id="Edit_staticNotification"></span>
+                <form id="Edit_Book_Form">
+                    <ul class="fieldlist">
+                        <li>
+                            <input id="Edit_Book_Id" hidden class="k-textbox" type="text" style="width: 100%" />
+                        </li>
+                        <li>
+                            <label class="required">書名</label>
+                            <input id="Edit_Book_Name" class="k-textbox" type="text" style="width: 100%" />
+                        </li>
+                        <li>
+                            <label class="required">作者</label>
+                            <input id="Edit_Book_Author" class="k-textbox" type="text" style="width: 100%" />
+                        </li>
+                        <li>
+                            <label class="required">出版社</label>
+                            <input id="Edit_Book_Publisher" class="k-textbox" type="text" style="width: 100%" />
+                        </li>
+                        <li>
+                            <label class="required">內容簡介</label>
+                            <input id="Edit_Book_Content" class="k-textbox" style="width: 100%" />
+                        </li>
+                        <li>
+                            <label class="required">購買日期</label>
+                            <input id="Edit_Bought_Datepicker" style="width: 100%" />
+                        </li>
+                        <li>
+                            <span class="required">圖書類別</span>
+                            <input id="Edit_Book_Category"  style="width: 100%" />
+                        </li>
+                        <li>
+                            <span class="required">借閱狀態</span>
+                            <input id="Edit_Book_Code"  style="width: 100%" />
+                        </li>
+                        <li>
+                            <span class="required">借閱人</span>
+                            <input id="Edit_Book_Keeper"  style="width: 100%" />
+                        </li>
+                        <li class="uk-text-right">
+                            <input type="button" class="k-button k-primary btn-add-book" id="Save_Book_Btn" value="儲存" />
+                            <input type="reset" hidden id="EditResetBtn" value="儲存" />
+                        </li>
+                    </ul>
+                </form>
+            </div>
+            <div id="book_grid"></div>
+            <span class="k-button-icon"></span>
+        </div>
+        <div id="delete_dialog"></div>
+    </main>
+    <script type="text/javascript" src="data/book-data.js"></script>
+    <script src="~/Scripts/jquery-2.1.4.min.js"></script>
+    <script src="~/Scripts/kendo.all.min.js"></script>
+    <script src="~/Scripts/uikit.min.js"></script>
+    <script src="~/Scripts/script.js"></script>
+    <script src="~/Scripts/kendo.culture.zh-TW.min.js"></script>
+    <script>
+        function DropDownList_SetBookClass(id) {
+            $.ajax({
+                url: "/Book/Class",
+                type: "POST",
+                dataType: "json",
+                success: function (data) {
+                    $("#"+id).kendoDropDownList({
+                        dataTextField: "BOOK_CLASS_NAME",
+                        dataValueField: "BOOK_CLASS_ID",
+                        dataSource: data,
+                        optionLabel: "請選擇..."
+                    });
+                }
+            });
+        }
+        function DropDownList_SetMembers(id) {
+            $.ajax({
+                url: "/Book/Member",
+                type: "POST",
+                dataType: "json",
+                success: function (data) {
+                    $("#" + id).kendoDropDownList({
+                        dataTextField: "USER_CNAME",
+                        dataValueField: "USER_ID",
+                        dataSource: data,
+                        optionLabel: "請選擇..."
+                    });
+                }
+            });
+        }
+        function DropDownList_SetCodes(id) {
+            $.ajax({
+                url: "/Book/Code",
+                type: "POST",
+                dataType: "json",
+                success: function (data) {
+                    $("#" + id).kendoDropDownList({
+                        dataTextField: "CODE_NAME",
+                        dataValueField: "CODE_ID",
+                        dataSource: data,
+                        optionLabel: "請選擇..."
+                    });
+                }
+            });
+        }
+        function openAddWindow() {
+            var addWindow = $("#Add_Window");
+            addWindow.kendoWindow({
+                width: "600px",
+                height: "700px",
+                title: "",
+                modal: true,
+                visible: true,
+                close: function (e) {
+                }
+            });
+            var popup = addWindow.data('kendoWindow');
+            popup.open();
+            popup.center();
+        }
+        function SetDatePicker(id) {
+            $("#"+id).kendoDatePicker({
+                value: new Date().toLocaleDateString(),
+                culture: "zh-TW"
+            });
+        }
+        function formatDate(date, sign) {
+            var d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
+
+            if (month.length < 2) month = '0' + month;
+            if (day.length < 2) day = '0' + day;
+
+            return [year, month, day].join(sign);
+        }
+        function refreshGrid(BOOK_NAME, BOOK_CLASS_ID, BOOK_KEEPER, BOOK_STATUS) {
+            var url = "/Book/Data?";
+            if (BOOK_NAME != undefined) {
+                url +="BOOK_NAME="+BOOK_NAME + "&";
+            }
+            if (BOOK_CLASS_ID != undefined) {
+                url += "BOOK_CLASS_ID="+ BOOK_CLASS_ID + "&";
+            }
+            if (BOOK_KEEPER != undefined) {
+                url += "BOOK_KEEPER="+BOOK_KEEPER + "&";
+            }
+            if (BOOK_STATUS != undefined) {
+                url += "BOOK_STATUS="+BOOK_STATUS;
+            }
+            $.ajax({
+                url: url,
+                type: "POST",
+                dataType: "json",
+                success: function (SearchData) {
+                    $.each(SearchData, function (k, v) {
+                        var date = new Date(parseInt(v.BOOK_BOUGHT_DATE.substr(6)));
+                        SearchData[k].BOOK_BOUGHT_DATE = formatDate(date, "/");
+                    });
+                    var dataSource = new kendo.data.DataSource({
+                        data: SearchData,
+                        pageSize: 20
+                    });
+                    var grid = $("#book_grid").data("kendoGrid");
+                    grid.setDataSource(dataSource);
+                }
+            });
+
+        }
+        function deleteBookDialog(bookId, name) {
+            var dialog = $('#delete_dialog');
+            dialog.kendoDialog({
+                width: "450px",
+                title: "SURE DELETE?",
+                closable: false,
+                modal: false,
+                content: "<p>確定要刪除 <strong>" + name + "</strong>   嗎?<p>",
+                actions: [
+                    { text: 'exit' },
+                    { text: 'delete', action: function(e){
+                        $.ajax({
+                            url: "/Book/DeleteBook/" + bookId,
+                            type: "POST",
+                            dataType: "json",
+                            success: function (data) {
+                                refreshGrid();
+                            }
+                        });
+                        return true;
+                    } }
+                ]
+            });
+            dialog.data("kendoDialog").open();
+        }
+        function SetBookGrid() {
+            $.ajax({
+                url: "/Book/Data",
+                type: "POST",
+                dataType: "json",
+                success: function (BookData) {
+                    $.each(BookData, function (k, v) {
+                        var date = new Date(parseInt(v.BOOK_BOUGHT_DATE.substr(6)));
+                        BookData[k].BOOK_BOUGHT_DATE = formatDate(date, "/");
+                    });
+                    $("#book_grid").kendoGrid({
+                        dataSource: {
+                            data: BookData,
+                            pageSize: 20
+                        },
+                        height: 750,
+                        sortable: true,
+                        pageable: {
+                            refresh: true,
+                            pageSizes: true,
+                            input: true,
+                            numeric: false,
+                            buttonCount: 1
+                        },
+                        columns: [
+                            { field: "BOOK_ID", hidden: true },
+                            { field: "BOOK_CLASS_ID", title: "書籍分類" },
+                            { field: "BOOK_NAME", title: "書籍名稱" },
+                            { field: "BOOK_BOUGHT_DATE", title: "購書日期" },
+                            { field: "BOOK_STATUS", title: "書籍狀態" },
+                            { field: "BOOK_KEEPER", title: "保管人" },
+                            { command: [{
+                                text: "修改", click: function (e) {
+                                    var id = e.target.parentNode.parentNode.children[0].innerText;
+                                    openEditWindow(id);
+                                }
+                            }], title: " ", width: "150px" },
+                            { command: [{
+                                    text: "刪除", click: function (e) {
+                                        var id = e.target.parentNode.parentNode.children[0].innerText;
+                                        var name = e.target.parentNode.parentNode.children[2].innerText;
+                                        deleteBookDialog(id,name);
+                                    }
+                                }], title: " ", width: "150px" }
+                        ]
+                    });
+                }
+            });
+        }
+        function LoadEditData(id) {
+            $.ajax({
+                url: "/Book/DataById/" + id,
+                type: "POST",
+                dataType: "json",
+                success: function (data) {
+                    $("#Edit_Book_Id").val(data.BOOK_ID);
+                    $("#Edit_Book_Name").val(data.BOOK_NAME);
+                    $("#Edit_Book_Author").val(data.BOOK_AUTHOR);
+                    $("#Edit_Book_Publisher").val(data.BOOK_PUBLISHER);
+                    $("#Edit_Book_Content").val(data.BOOK_NOTE);
+                    var date = new Date(parseInt(data.BOOK_BOUGHT_DATE.substr(6)));
+                    $("#Edit_Bought_Datepicker").val(formatDate(date, "/"));
+                    $("#Edit_Book_Category").data("kendoDropDownList").value(data.BOOK_CLASS_ID);
+                    $("#Edit_Book_Code").data("kendoDropDownList").value(data.BOOK_STATUS);
+                    $("#Edit_Book_Keeper").data("kendoDropDownList").value(data.BOOK_KEEPER);
+                }
+            });
+        }
+        function openEditWindow(id) {
+            var EditWindow = $("#Edit_Window");
+            EditWindow.kendoWindow({
+                width: "600px",
+                height: "700px",
+                title: "",
+                modal: true,
+                visible: true,
+                close: function (e) {
+                    $("#EditResetBtn").click();
+                }
+            });
+            LoadEditData(id);
+            var pop = EditWindow.data('kendoWindow');
+            pop.open();
+            pop.center();
+        }
+
+        function SearchEvent() {
+            var BOOK_NAME, BOOK_CLASS_ID, BOOK_KEEPER, BOOK_STATUS;
+            BOOK_NAME = $("#Book_Search_Name").val();
+            BOOK_CLASS_ID = $("#Book_Search_Category").val();
+            BOOK_KEEPER = $("#Book_Search_Member").val();
+            BOOK_STATUS = $("#Book_Search_Code").val();
+            if (BOOK_NAME === "") {
+                BOOK_NAME = undefined;
+            }
+            if (BOOK_CLASS_ID === "") {
+                BOOK_CLASS_ID = undefined;
+            } else {
+                BOOK_CLASS_ID = $("#Book_Search_Category").data("kendoDropDownList").text();
+            }
+            
+            if (BOOK_KEEPER === "") {
+                BOOK_KEEPER = undefined;
+            } else {
+                BOOK_KEEPER = $("#Book_Search_Member").data("kendoDropDownList").text();
+            }
+            if (BOOK_STATUS === "") {
+                BOOK_STATUS = undefined;
+            } else {
+                BOOK_STATUS = $("#Book_Search_Code").data("kendoDropDownList").text();
+            }
+            refreshGrid(BOOK_NAME, BOOK_CLASS_ID, BOOK_KEEPER, BOOK_STATUS);
+        }
+    </script>
+    <script>
+        $(document).ready(function () {
+            DropDownList_SetBookClass("Book_Search_Category");
+            DropDownList_SetMembers("Book_Search_Member");
+            DropDownList_SetCodes("Book_Search_Code");
+            DropDownList_SetBookClass("Add_Book_Category");
+            DropDownList_SetBookClass("Edit_Book_Category");
+            DropDownList_SetMembers("Edit_Book_Keeper");
+            DropDownList_SetCodes("Edit_Book_Code");
+            SetDatePicker("Bought_Datepicker");
+            SetDatePicker("Edit_Bought_Datepicker");
+            SetBookGrid();
+            $("#Btn_Open_Add_Window").click(function() {
+                openAddWindow();
+            });
+
+        });
+        
+        var staticNotification = $("#Add_staticNotification").kendoNotification({
+            appendTo: "#appendto"
+        }).data("kendoNotification");
+        $("#Add_Book_Btn").click(function () {
+            var author = $("#Add_Book_Author").val();
+            var name = $("#Add_Book_Name").val();
+            var classId = $("#Add_Book_Category").val();
+            var bought_date = $("#Bought_Datepicker").val();
+            var publisher = $("#Add_Book_Publisher").val();
+            var bookNote = $("#Add_Book_Content").val();
+            if (classId == "") {
+                staticNotification.show(kendo.toString('請選擇類別'), "error");
+            } else if (name == "") {
+                staticNotification.show('請填寫書名', "error");
+            } else if (author == "") {
+                staticNotification.show('請填寫作者', "error");
+            } else if (bought_date == "") {
+                staticNotification.show('請填寫購買日期', "error");
+            } else {
+                
+                $.ajax({
+                    url: "/Book/Insert",
+                    type: "POST",
+                    dataType: "json",
+                    data: {
+                        "BOOK_NAME": name,
+                        "BOOK_CLASS_ID": classId,
+                        "BOOK_AUTHOR": author,
+                        "BOOK_BOUGHT_DATE": bought_date,
+                        "BOOK_PUBLISHER": publisher,
+                        "BOOK_NOTE": bookNote
+                    },
+                    success: function (data) {
+                        alert("編號"+data);
+                        refreshGrid();
+                        $("#Add_Reset_Btn").click();
+                    }
+                });
+                 $("#Add_Window").data('kendoWindow').close();
+            }
+        });
+      
+        $("#Save_Book_Btn").click(function () {
+            var id = $("#Edit_Book_Id").val();
+            var author = $("#Edit_Book_Author").val();
+            var name = $("#Edit_Book_Name").val();
+            var classId = $("#Edit_Book_Category").val();
+            var bought_date = $("#Edit_Bought_Datepicker").val();
+            var publisher = $("#Edit_Book_Publisher").val();
+            var bookNote = $("#Edit_Book_Content").val();
+            var code = $("#Edit_Book_Code").val();
+            var keeper = $("#Edit_Book_Keeper").val();
+            if (classId == "") {
+                staticNotification.show(kendo.toString('請選擇類別'), "error");
+            } else if (name == "") {
+                staticNotification.show('請填寫書名', "error");
+            } else if (author == "") {
+                staticNotification.show('請填寫作者', "error");
+            } else if (bought_date == "") {
+                staticNotification.show('請填寫購買日期', "error");
+            } else {
+                
+                $.ajax({
+                    url: "/Book/EditBook",
+                    type: "POST",
+                    dataType: "json",
+                    data: {
+                        "BOOK_ID": id,
+                        "BOOK_NAME": name,
+                        "BOOK_CLASS_ID": classId,
+                        "BOOK_AUTHOR": author,
+                        "BOOK_BOUGHT_DATE": bought_date,
+                        "BOOK_PUBLISHER": publisher,
+                        "BOOK_STATUS": code,
+                        "BOOK_KEEPER": keeper,
+                        "BOOK_NOTE": bookNote
+                    },
+                    success: function (data) {
+                        refreshGrid();
+                        $("#Edit_Window").click();
+                    }
+                });
+                $("#Edit_Window").data('kendoWindow').close();
+            }
+        });
+    </script>
+</body>
+
+</html>
