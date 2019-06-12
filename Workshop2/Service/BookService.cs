@@ -14,7 +14,14 @@ namespace Service
 {
     public class BookService
     {
+        /// <summary>
+        /// 連接資訊
+        /// </summary>
         string _conn = @"Data Source = 34.80.215.162; Initial Catalog = GSSWEB; Integrated Security=False;User ID=sa;Password=aAzZ1234;";
+        /// <summary>
+        /// 取得書籍分類清單
+        /// </summary>
+        /// <returns>BOOK_CLASS</returns>
         public List<BOOK_CLASS> GetBookClassList()
         {
             DataTable dt = new DataTable();
@@ -39,6 +46,10 @@ namespace Service
 
             return bookClasses;
         }
+        /// <summary>
+        /// 取得會員清單
+        /// </summary>
+        /// <returns>MEMBER_M</returns>
         public List<MEMBER_M> GetMemberList()
         {
             DataTable dt = new DataTable();
@@ -63,6 +74,10 @@ namespace Service
             
             return members;
         }
+        /// <summary>
+        /// 取得書籍狀態清單
+        /// </summary>
+        /// <returns>BOOK_CODE</returns>
         public List<BOOK_CODE> GetCodeList()
         {
             DataTable dt = new DataTable();
@@ -87,6 +102,14 @@ namespace Service
 
             return codes;
         }
+        /// <summary>
+        /// 用搜尋條件取得書籍資料
+        /// </summary>
+        /// <param name="BOOK_NAME">書籍名稱</param>
+        /// <param name="BOOK_CLASS_ID">書籍分類ID</param>
+        /// <param name="BOOK_KEEPER">使用者ID</param>
+        /// <param name="BOOK_STATUS">書籍狀態碼</param>
+        /// <returns>BOOK_DATA</returns>
         public List<BOOK_DATA> GetBookDataList(string BOOK_NAME, string BOOK_CLASS_ID, string BOOK_KEEPER, string BOOK_STATUS)
         {
             DataTable dt = new DataTable();
@@ -141,6 +164,11 @@ namespace Service
 
             return data.OrderByDescending(x=>x.BOOK_BOUGHT_DATE).ToList();
         }
+        /// <summary>
+        /// 使用ID 取得書籍資料
+        /// </summary>
+        /// <param name="BookId">書籍ID</param>
+        /// <returns>BOOK_DATA</returns>
         public BOOK_DATA GetBookData(int BookId)
         {
             DataTable dt = new DataTable();
@@ -168,7 +196,11 @@ namespace Service
             _data.BOOK_KEEPER = dt.Rows[0][8].ToString();
             return _data;
         }
-
+        /// <summary>
+        /// 新增書籍
+        /// </summary>
+        /// <param name="bookData">BOOK_DATA</param>
+        /// <returns>BOOK_DATA.BOOK_ID</returns>
         public int InsertBook(BOOK_DATA bookData)
         {
             string sql = @" INSERT INTO BOOK_DATA
@@ -199,7 +231,11 @@ namespace Service
             }
             return id;
         }
-
+        /// <summary>
+        /// 使用ID刪除書籍資料
+        /// </summary>
+        /// <param name="bookData">BOOK_DATA</param>
+        /// <returns>BOOK_DATA.BOOK_ID</returns>
         public int DeleteBook(int id)
         {
             try
@@ -213,7 +249,6 @@ namespace Service
                     cmd.ExecuteNonQuery();
                     conn.Close();
                 }
-
                 return id;
             }
             catch (Exception ex)
@@ -221,6 +256,11 @@ namespace Service
                 return 404;
             }
         }
+        /// <summary>
+        /// 修改書籍資料
+        /// </summary>
+        /// <param name="bookData">BOOK_DATA</param>
+        /// <returns>BOOK_DATA.BOOK_ID</returns>
         public int EditBook(BOOK_DATA bookData)
         {
             
